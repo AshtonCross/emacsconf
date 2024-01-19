@@ -1,0 +1,170 @@
+#+TITLE: AEmacs
+#+AUTHOR: Ashton Cross
+#+DESCRIPTION: Ashton's Emacs
+#+STARTUP: showeverything
+#+OPTIONS: toc:2
+
+* Repositories
+ELPA is enabled by default, so this is pretty much just for MELPA By
+default this is not enabled. Just uncomment (select the lines and hit
+M-;!), then refresh packages, then MELPA should be enabled going forward.
+
+MELPA is not enabled because I prefer and trust first-ish-party
+plugins maintained and hosted in ELPA rather than community
+packages. The mindset behind this config in general is to keep it as
+vanilla as possible. MELPA doesn't really quite fit this, but if you
+want to use it knock yourself out.
+
+Also, if you prefer LSP-mode over eglot, you will need MELPA!
+
+#+begin_src emacs-lisp
+  ;; (require 'package)
+  ;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  ;; (package-initialize)
+#+end_src
+
+* Get Rid of Annoying Things
+
+** custom.el
+By default tweaks to emacs' settings is kinda annoying. Here we move
+it to its own containment file.
+
+#+begin_src emacs-lisp
+
+  (setq custom-file (locate-user-emacs-file "custom.el"))
+  (when (file-exists-p custom-file)
+    (load custom-file))
+  (put 'dired-find-alternate-file 'disabled nil)
+
+#+end_src
+
+** Move Annoying Backups
+By default in emacs, it creates backups. While sure, it's nice to have
+these, they really get annyoing fast. This tucks them away to a
+folder.
+
+#+begin_src emacs-lisp
+  
+  (setq make-backup-files nil)
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+        backup-by-copying t    ; Don't delink hardlinks
+        version-control t      ; Use version numbers on backups
+        delete-old-versions t  ; Automatically delete excess backups
+        kept-new-versions 20   ; how many of the newest versions to keep
+        kept-old-versions 5    ; and how many of the old
+        )
+
+#+end_src
+
+** UI Tweaks
+Bunch of cosmetic changes.
+
+#+begin_src emacs-lisp
+  (display-battery-mode 1)		; battery (useful for laptops)
+  (display-time-mode) 		; time clock 
+  (tool-bar-mode -1)
+  (toggle-scroll-bar -1)
+  (blink-cursor-mode 0)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (global-prettify-symbols-mode 1)	; this makes lambdas look cool in lisp
+  (global-hl-line-mode t)			; highlight current line
+#+end_src
+
+** Misc
+Just random crap.
+
+#+begin_src emacs-lisp
+  (setq scroll-conservatively 100)
+  (put 'dired-find-alternate-file 'disabled nil)
+  (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+  (setq ring-bell-function 'ignore)
+
+  ;; Automatically pair parentheses
+  (electric-pair-mode t)
+#+end_src
+
+* Org Mode Tweaks
+Just some things to make org mode feel nicer.
+Also includes adgenda stuff. Plus extra features.
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c l") #'org-store-link)
+  (global-set-key (kbd "C-c a") #'org-agenda)
+
+  (unless (package-installed-p 'org-contrib)
+    (package-install 'org-contrib))
+
+  (add-hook 'org-mode-hook 'org-indent-mode) ; indention looks better
+#+end_src
+
+* Editing Bliss
+
+** Flymake
+#+begin_src emacs-lisp
+  (add-hook 'prog-mode-hook #'flymake-mode)
+
+  ;; Message navigation bindings
+  (with-eval-after-load 'flymake
+    (define-key flymake-mode-map (kbd "C-c n") #'flymake-goto-next-error)
+    (define-key flymake-mode-map (kbd "C-c p") #'flymake-goto-prev-error))
+#+end_src
+
+** Language Support
+This is for any additional languages that may not come with vanilla
+emacs. LSP is enabled later (if at all).
+
+#+begin_src emacs-lisp
+  (unless (package-installed-p 'rust-mode)
+    (package-install 'rust-mode))
+#+end_src
+
+** LSP with Eglot
+LSP is something I love but I also kinda hate. Really flycheck and
+auto-completion is all that I need, but this makes those better.
+
+Eglot comes by default in Emacs 29, so the install is not nessisary
+for new versions.
+
+*** install / configure
+#+begin_src emacs-lisp
+  (unless (package-installed-p 'eglot)
+      (package-install 'eglot))
+#+end_src
+
+*** languages
+#+begin_src emacs-lisp
+  (add-hook 'html-mode-hook 'eglot-ensure)
+  (add-hook 'c-mode-hook 'eglot-ensure)
+#+end_src
+
+** auto-completion w./ corfu
+
+#+begin_src emacs-lisp
+  (unless (package-installed-p 'corfu)
+    (package-install 'corfu))
+
+  (add-hook 'prog-mode-hook #'corfu-mode)
+  (setq corfu-auto t)
+#+end_src 
+
+* Fun or Random Packages
+
+** Guru Mode
+To help learn more emacs! Not entirely very useful but hey.
+
+#+begin_src emacs-lisp
+  (unless (package-installed-p 'guru-mode)
+    (package-install 'guru-mode))
+  (guru-global-mode +1)
+  (setq guru-warn-only nil)
+#+end_src
+
+** Ement, matrix client.
+Better than discord
+
+#+begin_src emacs-lisp
+  (unless (package-installed-p 'ement)
+    (package-install 'ement))
+#+end_src
+
