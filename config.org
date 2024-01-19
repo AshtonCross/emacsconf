@@ -4,6 +4,25 @@
 #+STARTUP: showeverything
 #+OPTIONS: toc:2
 
+* Setup and Dependancies
+For this config to work out of the gate it's a good idea to have the
+following packages.
+
+- Clang
+
+  This is for lsp with c/c++
+  
+- vscode-langservers-extracted
+
+  These are for lsp with various other languages. At this early stage
+  it's just HTML. To install it, first install npm, then run:
+
+  npm install -g vscode-langservers-extracted
+
+- rust-analyzer
+
+  Eventually, when I get rust LSP to work, this will be a dependancy.
+
 * Repositories
 ELPA is enabled by default, so this is pretty much just for MELPA By
 default this is not enabled. Just uncomment (select the lines and hit
