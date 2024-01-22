@@ -24,22 +24,12 @@ following packages.
   Eventually, when I get rust LSP to work, this will be a dependancy.
 
 * Repositories
-ELPA is enabled by default, so this is pretty much just for MELPA By
-default this is not enabled. Just uncomment (select the lines and hit
-M-;!), then refresh packages, then MELPA should be enabled going forward.
-
-MELPA is not enabled because I prefer and trust first-ish-party
-plugins maintained and hosted in ELPA rather than community
-packages. The mindset behind this config in general is to keep it as
-vanilla as possible. MELPA doesn't really quite fit this, but if you
-want to use it knock yourself out.
-
-Also, if you prefer LSP-mode over eglot, you will need MELPA!
 
 #+begin_src emacs-lisp
-  ;; (require 'package)
-  ;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-  ;; (package-initialize)
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (package-initialize)
+  (package-refresh-contents)			; run in daemon mode!
 #+end_src
 
 * Get Rid of Annoying Things
@@ -99,7 +89,7 @@ Just random crap.
   (add-hook 'prog-mode-hook #'display-line-numbers-mode)
   (setq ring-bell-function 'ignore)
 
-  ;; Automatically pair parentheses
+  ;; Automatically pair parentheses n whatnot
   (electric-pair-mode t)
 #+end_src
 
@@ -185,5 +175,13 @@ Better than discord
 #+begin_src emacs-lisp
   (unless (package-installed-p 'ement)
     (package-install 'ement))
+#+end_src
+
+** one.el
+Build static websites in Emacs Lisp!
+
+#+begin_src emacs-lisp
+    (unless (package-installed-p 'one)
+      (package-install 'one))
 #+end_src
 
